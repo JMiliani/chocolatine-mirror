@@ -1,0 +1,5 @@
+# Binary
+binary
+
+# Object files
+src/*.o
