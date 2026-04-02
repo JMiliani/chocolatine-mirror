@@ -5,7 +5,6 @@ on:
   pull_request:
 
 env:
-  MIRROR_SSH_URL: ${{ secrets.MIRROR_SSH_URL }}
   EXECUTABLES: "binary"
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -83,7 +82,7 @@ jobs:
     name: Push to mirror
     needs: run_tests
     if: ${{ github.event_name == 'push' &&
-            env.MIRROR_SSH_URL != '' &&
+            secrets.MIRROR_SSH_URL != '' &&
             !startsWith(github.ref, 'refs/heads/no-ga/') &&
             github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11' }}
 
@@ -98,5 +97,5 @@ jobs:
       - name: Mirror repository
         uses: pixta-dev/repository-mirroring-action@v1
         with:
-          target_repo_url: ${{ env.MIRROR_SSH_URL }}
+          target_repo_url: ${{ secrets.MIRROR_SSH_URL }}
           ssh_private_key: ${{ secrets.GIT_SSH_PRIVATE_KEY }}
