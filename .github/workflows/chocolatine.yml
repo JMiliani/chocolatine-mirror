@@ -7,6 +7,7 @@ on:
 env:
   MIRROR_SSH_URL: ${{ secrets.MIRROR_SSH_URL }}
   EXECUTABLES: "binary"
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
 
@@ -27,6 +28,10 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Compile project
+        run: make
+        timeout-minutes: 2
+
       - name: Run banana coding style check
         run: |
           banana-check-repo . 2> banana.log || true
@@ -39,10 +44,6 @@ jobs:
             done < banana.log
             exit 1
           fi
-
-      - name: Compile project
-        run: make
-        timeout-minutes: 2
 
       - name: Clean project
         run: make clean
