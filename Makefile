@@ -24,8 +24,7 @@ $(NAME): $(OBJ)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-tests_run:
-	all
+tests_run: all
 	./$(NAME)
 
 clean:
@@ -36,4 +35,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re fclean

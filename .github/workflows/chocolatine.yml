@@ -28,12 +28,12 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Run banana coding style check
-        run: banana-check-repo . 2> banana.log || true
-
       - name: Compile project
         run: make
         timeout-minutes: 2
+
+      - name: Run banana coding style check
+        run: banana-check-repo . 2> banana.log || true
 
       - name: Display coding style errors
         run: |
