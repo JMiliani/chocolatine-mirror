@@ -6,14 +6,13 @@ on:
 
 env:
   MIRROR_SSH_URL: ${{ secrets.MIRROR_SSH_URL }}
-  PROJET_REPO: "G-DOP-200-LYN-2-1-chocolatine-11"
   EXECUTABLES: "binary"
 
 jobs:
 
   check_compilation_and_coding_style:
     name: Check compilation and coding style
-    if: "!startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != env.PROJET_REPO"
+    if: "!startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != env.'G-DOP-200-LYN-2-1-chocolatine-11'"
     runs-on: ubuntu-latest
 
     container:
@@ -61,7 +60,7 @@ jobs:
   run_tests:
     name: Run tests
     needs: check_compilation_and_coding_style
-    if: "!startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != env.PROJET_REPO"
+    if: "!startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11'"
     runs-on: ubuntu-latest
 
     container:
@@ -83,7 +82,7 @@ jobs:
     needs: run_tests
     if: github.event_name == 'push' &&
         !startsWith(github.ref, 'refs/heads/no-ga/') &&
-        github.repository != env.PROJET_REPO
+        github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11'
 
     runs-on: ubuntu-latest
 
