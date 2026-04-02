@@ -13,7 +13,7 @@ jobs:
 
   check_compilation_and_coding_style:
     name: Check compilation and coding style
-    if: "!startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11'"
+    if: ${{ !startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11' }}
     runs-on: ubuntu-latest
 
     container:
@@ -28,19 +28,19 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Run banana coding style check
+        run: banana-check-repo . 2> banana.log || true
+
       - name: Compile project
         run: make
         timeout-minutes: 2
 
-      - name: Run banana coding style check
-        run: |
-          banana-check-repo . 2> banana.log || true
-
       - name: Display coding style errors
         run: |
           if [ -s banana.log ]; then
-            while IFS=: read -r file line rest; do
-              echo "::error file=$file,line=$line::$rest"
+            while IFS= read -r line; do
+              file=$(echo "$line" | cut -d ':' -f1)
+              echo "::error file=$file::$line"
             done < banana.log
             exit 1
           fi
@@ -61,7 +61,7 @@ jobs:
   run_tests:
     name: Run tests
     needs: check_compilation_and_coding_style
-    if: "!startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11'"
+    if: ${{ !startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11' }}
     runs-on: ubuntu-latest
 
     container:
@@ -81,9 +81,9 @@ jobs:
   push_to_mirror:
     name: Push to mirror
     needs: run_tests
-    if: github.event_name == 'push' &&
-        !startsWith(github.ref, 'refs/heads/no-ga/') &&
-        github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11'
+    if: ${{ github.event_name == 'push' &&
+            !startsWith(github.ref, 'refs/heads/no-ga/') &&
+            github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11' }}
 
     runs-on: ubuntu-latest
 

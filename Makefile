@@ -24,6 +24,9 @@ $(NAME): $(OBJ)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+tests_run:
+	./$(NAME)
+
 clean:
 	rm -f $(OBJ)
 
