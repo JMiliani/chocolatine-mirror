@@ -6,39 +6,44 @@ on:
 
 env:
   MIRROR_SSH_URL: ${{ secrets.MIRROR_SSH_URL }}
+  PROJET_REPO: "G-DOP-200-LYN-2-1-chocolatine-11"
   EXECUTABLES: "binary"
 
 jobs:
+
   check_compilation_and_coding_style:
-    if: "!startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'JMiliani/chocolatine-mirror'"
+    name: Check compilation and coding style
+    if: "!startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != env.PROJET_REPO"
     runs-on: ubuntu-latest
+
     container:
       image: epitechcontent/epitest-docker
+
+    env:
+      CC: epiclang
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Run banana coding style check
-        run: banana-check-repo .
+        run: |
+          banana-check-repo . 2> banana.log || true
+
+      - name: Display coding style errors
+        run: |
+          if [ -s banana.log ]; then
+            while IFS=: read -r file line rest; do
+              echo "::error file=$file,line=$line::$rest"
+            done < banana.log
+            exit 1
+          fi
 
       - name: Compile project
         run: make
         timeout-minutes: 2
-        env:
-          CC: epiclang
-
-      - name: Check for coding style errors
-        run: |
-          if [ -f coding-style-reports.log ]; then
-            while read line; do
-              file=$(echo $line | cut -d':' -f1)
-              line_num=$(echo $line | cut -d':' -f2)
-              message=$(echo $line | cut -d':' -f3-)
-              echo "::error file=$file,line=$line_num::$message"
-            done < coding-style-reports.log
-            exit 1
-          fi
 
       - name: Clean project
         run: make clean
@@ -46,35 +51,47 @@ jobs:
       - name: Check executables
         run: |
           for exe in $(echo $EXECUTABLES | tr ',' ' '); do
-            if [ ! -x "$exe" ]; then
+            if [ ! -f "$exe" ] || [ ! -x "$exe" ]; then
               echo "::error file=$exe::Binary not found or not executable"
               exit 1
             fi
           done
 
+
   run_tests:
-    if: "!startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'JMiliani/chocolatine-mirror'"
+    name: Run tests
+    needs: check_compilation_and_coding_style
+    if: "!startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != env.PROJET_REPO"
     runs-on: ubuntu-latest
+
     container:
       image: epitechcontent/epitest-docker
-    needs: check_compilation_and_coding_style
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Run tests
         run: make tests_run
         timeout-minutes: 2
 
+
   push_to_mirror:
-    if: "!startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'JMiliani/chocolatine-mirror' && github.event_name == 'push'"
-    runs-on: ubuntu-latest
+    name: Push to mirror
     needs: run_tests
+    if: github.event_name == 'push' &&
+        !startsWith(github.ref, 'refs/heads/no-ga/') &&
+        github.repository != env.PROJET_REPO
+
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Mirror repository
         uses: pixta-dev/repository-mirroring-action@v1
