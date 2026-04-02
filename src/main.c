@@ -9,7 +9,7 @@
 #include "include.h"
 
 /* Main function */
-int main(void)
+int main()
 {
     return 0;
 }

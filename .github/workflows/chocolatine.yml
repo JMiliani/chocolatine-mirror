@@ -28,9 +28,8 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Compile project
-        run: make
-        timeout-minutes: 2
+      - name: Clean before coding style
+        run: make fclean || true
 
       - name: Run banana coding style check
         run: banana-check-repo . 2> banana.log || true
@@ -45,8 +44,9 @@ jobs:
             exit 1
           fi
 
-      - name: Clean project
-        run: make clean
+      - name: Compile project
+        run: make
+        timeout-minutes: 2
 
       - name: Check executables
         run: |
@@ -57,6 +57,8 @@ jobs:
             fi
           done
 
+      - name: Clean project
+        run: make fclean
 
   run_tests:
     name: Run tests
@@ -77,11 +79,11 @@ jobs:
         run: make tests_run
         timeout-minutes: 2
 
-
   push_to_mirror:
     name: Push to mirror
     needs: run_tests
     if: ${{ github.event_name == 'push' &&
+            env.MIRROR_SSH_URL != '' &&
             !startsWith(github.ref, 'refs/heads/no-ga/') &&
             github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11' }}
 
