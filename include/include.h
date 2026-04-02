@@ -8,7 +8,4 @@
 #ifndef INCLUDE_H
     #define INCLUDE_H
 
-    /* Include */
-    #define "my_lib.h"
-
 #endif
