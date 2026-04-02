@@ -25,6 +25,7 @@ $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 tests_run:
+	all
 	./$(NAME)
 
 clean:
