@@ -2,4 +2,4 @@
 binary
 
 # Object files
-# src/*.o
+src/*.o
