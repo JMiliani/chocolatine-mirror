@@ -9,52 +9,51 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-
   check_compilation_and_coding_style:
-  name: Check compilation and coding style
-  if: ${{ !startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'EpitechPGE1-2025/G-DOP-200-LYN-2-1-chocolatine-11' }}
-  runs-on: ubuntu-latest
+    name: Check compilation and coding style
+    if: ${{ !startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'EpitechPGE1-2025/G-DOP-200-LYN-2-1-chocolatine-11' }}
+    runs-on: ubuntu-latest
 
-  container:
-    image: epitechcontent/epitest-docker
+    container:
+      image: epitechcontent/epitest-docker
 
-  env:
-    CC: epiclang
+    env:
+      CC: epiclang
 
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-    - name: Run banana coding style check
-      run: banana-check-repo . 2> banana.log || true
+      - name: Run banana coding style check
+        run: banana-check-repo . 2> banana.log || true
 
-    - name: Display coding style errors
-      run: |
-        if [ -s banana.log ]; then
-          while IFS= read -r line; do
-            file=$(echo "$line" | cut -d ':' -f1)
-            echo "::error file=$file::$line"
-          done < banana.log
-          exit 1
-        fi
-
-    - name: Compile project
-      run: make
-      timeout-minutes: 2
-
-    - name: Check executables
-      run: |
-        for exe in $(echo $EXECUTABLES | tr ',' ' '); do
-          if [ ! -f "$exe" ] || [ ! -x "$exe" ]; then
-            echo "::error file=$exe::Binary not found or not executable"
+      - name: Display coding style errors
+        run: |
+          if [ -s banana.log ]; then
+            while IFS= read -r line; do
+              file=$(echo "$line" | cut -d ':' -f1)
+              echo "::error file=$file::$line"
+            done < banana.log
             exit 1
           fi
-        done
 
-    - name: Clean project
-      run: make fclean
+      - name: Compile project
+        run: make
+        timeout-minutes: 2
+
+      - name: Check executables
+        run: |
+          for exe in $(echo $EXECUTABLES | tr ',' ' '); do
+            if [ ! -f "$exe" ] || [ ! -x "$exe" ]; then
+              echo "::error file=$exe::Binary not found or not executable"
+              exit 1
+            fi
+          done
+
+      - name: Clean project
+        run: make fclean
 
   run_tests:
     name: Run tests
