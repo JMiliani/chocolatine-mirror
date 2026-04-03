@@ -11,5 +11,6 @@
 /* Main function */
 int main(void)
 {
-    return 0;
+    int a = 0;
+    return a;
 }
