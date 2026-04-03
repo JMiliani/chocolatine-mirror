@@ -9,9 +9,4 @@
 #include "include.h"
 
 /* Main function */
-int main(void)
-{
-    int a = 0;
-
-    return a;
-}
+int main(void){return 0;}

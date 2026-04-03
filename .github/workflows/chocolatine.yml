@@ -30,6 +30,10 @@ jobs:
       - name: Run banana coding style check
         run: banana-check-repo . 2> banana.log || true
 
+      - name: Compile project
+        run: make
+        timeout-minutes: 2
+
       - name: Display coding style errors
         run: |
           if [ -s banana.log ]; then
@@ -39,10 +43,6 @@ jobs:
             done < banana.log
             exit 1
           fi
-
-      - name: Compile project
-        run: make
-        timeout-minutes: 2
 
       - name: Check executables
         run: |
