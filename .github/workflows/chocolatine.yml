@@ -27,9 +27,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Clean before coding style
-        run: make fclean || true
-
       - name: Run banana coding style check
         run: banana-check-repo . 2> banana.log || true
 
