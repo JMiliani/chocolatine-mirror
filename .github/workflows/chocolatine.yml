@@ -12,7 +12,7 @@ jobs:
 
   check_compilation_and_coding_style:
     name: Check compilation and coding style
-    if: ${{ !startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11' }}
+    if: ${{ !startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'EpitechPGE1-2025/G-DOP-200-LYN-2-1-chocolatine-11' }}
     runs-on: ubuntu-latest
 
     container:
@@ -59,7 +59,7 @@ jobs:
   run_tests:
     name: Run tests
     needs: check_compilation_and_coding_style
-    if: ${{ !startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11' }}
+    if: ${{ !startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'EpitechPGE1-2025/G-DOP-200-LYN-2-1-chocolatine-11' }}
     runs-on: ubuntu-latest
 
     container:
@@ -78,7 +78,7 @@ jobs:
   push_to_mirror:
     name: Push to mirror
     needs: run_tests
-    if: ${{ github.event_name == 'push' && !startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'G-DOP-200-LYN-2-1-chocolatine-11' }}
+    if: ${{ github.event_name == 'push' && !startsWith(github.ref, 'refs/heads/no-ga/') && github.repository != 'EpitechPGE1-2025/G-DOP-200-LYN-2-1-chocolatine-11' }}
     runs-on: ubuntu-latest
 
     steps:
