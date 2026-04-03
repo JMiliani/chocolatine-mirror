@@ -27,7 +27,8 @@ jobs:
           fetch-depth: 1
 
       - name: Run banana coding style check
-        run: banana-check-repo . > banana.log 2>&1
+        run: |
+          banana-check-repo . 2>&1 | tee banana.log
 
       - name: Display coding style errors
         run: |
