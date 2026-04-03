@@ -32,12 +32,12 @@ jobs:
 
       - name: Display coding style errors
         run: |
-          if [ -s banana.log ]; then
+          if grep -q "\[Banana\]" banana.log; then
             echo "Banana coding style errors detected:"
-            while IFS= read -r line; do
+            grep "\[Banana\]" banana.log | while IFS= read -r line; do
               file=$(echo "$line" | cut -d ':' -f1)
               echo "::error file=$file::$line"
-            done < banana.log
+            done
             exit 1
           fi
 
