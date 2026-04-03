@@ -27,11 +27,12 @@ jobs:
           fetch-depth: 1
 
       - name: Run banana coding style check
-        run: banana-check-repo . 2> banana.log || true
+        run: banana-check-repo . > banana.log 2>&1
 
       - name: Display coding style errors
         run: |
           if [ -s banana.log ]; then
+            echo "Banana coding style errors detected:"
             while IFS= read -r line; do
               file=$(echo "$line" | cut -d ':' -f1)
               echo "::error file=$file::$line"
